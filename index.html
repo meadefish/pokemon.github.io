@@ -65,62 +65,63 @@
   <footer>
     &copy; 2025 Meadefish Solutions | Hosted on <a href="https://pages.github.com/">GitHub Pages</a>
   </footer>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script>
-    console.log("Script loaded!");
-    const supabaseUrl = 'https://kjrkptqhtztdxsouflzw.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqcmtwdHFodHp0ZHhzb3VmbHp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU1MjEzMzUsImV4cCI6MjA3MTA5NzMzNX0.zNRUU9iNrtcKVKoDLclYgy_AvbFvp12JDm8B1NZjMLQ';
-    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
-    async function testSupabaseConnection() {
-      try {
-        // Try a minimal query (get 1 row from any table)
-        const { data, error } = await supabase.from('pokemon').select('*').limit(1);
-        if (error) {
-          console.error('Supabase connection failed:', error.message);
-          document.getElementById('data-container').textContent = 'Supabase connection failed: ' + error.message;
-          return false;
+      (async () => {
+        console.log("Script loaded!");
+      
+        // Dynamically load Supabase JS from CDN
+        const supabaseModule = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm');
+        const supabaseUrl = 'https://kjrkptqhtztdxsouflzw.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqcmtwdHFodHp0ZHhzb3VmbHp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU1MjEzMzUsImV4cCI6MjA3MTA5NzMzNX0.zNRUU9iNrtcKVKoDLclYgy_AvbFvp12JDm8B1NZjMLQ';
+        const supabase = supabaseModule.createClient(supabaseUrl, supabaseKey);
+      
+        async function testSupabaseConnection() {
+          try {
+            const { data, error } = await supabase.from('pokemon').select('*').limit(1);
+            if (error) {
+              console.error('Supabase connection failed:', error.message);
+              document.getElementById('data-container').textContent = 'Supabase connection failed: ' + error.message;
+              return false;
+            }
+            console.log('Supabase connection OK:', data);
+            return true;
+          } catch (err) {
+            console.error('Supabase JS error:', err);
+            document.getElementById('data-container').textContent = 'Supabase JS error: ' + err;
+            return false;
+          }
         }
-        console.log('Supabase connection OK:', data);
-        return true;
-      } catch (err) {
-        console.error('Supabase JS error:', err);
-        document.getElementById('data-container').textContent = 'Supabase JS error: ' + err;
-        return false;
-      }
-    }
-
-    async function fetchData() {
-      const { data, error } = await supabase.from('pokemon').select('*');
-      console.log('Data:', data, 'Error:', error);
-      if (error) {
-        document.getElementById('data-container').textContent = 'Error: ' + error.message;
-        return;
-      }
-      displayData(data);
-    }
-
-    function displayData(data) {
-      const container = document.getElementById('data-container');
-      container.innerHTML = '';
-      if (!data || data.length === 0) {
-        container.textContent = 'No data found!';
-        return;
-      }
-      data.forEach(row => {
-        const div = document.createElement('div');
-        div.textContent = JSON.stringify(row);
-        container.appendChild(div);
-      });
-    }
-
-    // Test connection before running fetchData
-    testSupabaseConnection().then(isConnected => {
-      if (isConnected) {
-        fetchData();
-      } // If not connected, message already shown
-    });
+      
+        async function fetchData() {
+          const { data, error } = await supabase.from('pokemon').select('*');
+          console.log('Data:', data, 'Error:', error);
+          if (error) {
+            document.getElementById('data-container').textContent = 'Error: ' + error.message;
+            return;
+          }
+          displayData(data);
+        }
+      
+        function displayData(data) {
+          const container = document.getElementById('data-container');
+          container.innerHTML = '';
+          if (!data || data.length === 0) {
+            container.textContent = 'No data found!';
+            return;
+          }
+          data.forEach(row => {
+            const div = document.createElement('div');
+            div.textContent = JSON.stringify(row);
+            container.appendChild(div);
+          });
+        }
+      
+        // Test connection before running fetchData
+        if (await testSupabaseConnection()) {
+          await fetchData();
+        }
+      })();
   </script>
+ 
 </body>
 </html>

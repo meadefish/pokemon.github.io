@@ -1,21 +1,3 @@
-
-
-<script>
-  const supabaseUrl = 'https://kjrkptqhtztdxsouflzw.supabase.co';
-  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqcmtwdHFodHp0ZHhzb3VmbHp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU1MjEzMzUsImV4cCI6MjA3MTA5NzMzNX0.zNRUU9iNrtcKVKoDLclYgy_AvbFvp12JDm8B1NZjMLQ';
-  const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
-  // Example: Fetch data from a table
-  async function getData() {
-    const { data, error } = await supabase
-      .from('pokemon')
-      .select('*');
-    console.log(data, error);
-  }
-
-  getData();
-</script>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>

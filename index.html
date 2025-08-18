@@ -66,14 +66,14 @@
     &copy; 2025 Meadefish Solutions | Hosted on <a href="https://pages.github.com/">GitHub Pages</a>
   </footer>
 
-  <!-- Place both scripts together, no 'defer' for the inline script -->
+  <!-- Place these as the very last thing before </body> -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script>
     console.log("Script loaded!");
     const supabaseUrl = 'https://kjrkptqhtztdxsouflzw.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqcmtwdHFodHp0ZHhzb3VmbHp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU1MjEzMzUsImV4cCI6MjA3MTA5NzMzNX0.zNRUU9iNrtcKVKoDLclYgy_AvbFvp12JDm8B1NZjMLQ';
     const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
+  
     async function fetchData() {
       const { data, error } = await supabase.from('pokemon').select('*');
       console.log('Data:', data, 'Error:', error);
@@ -83,7 +83,7 @@
       }
       displayData(data);
     }
-
+  
     function displayData(data) {
       const container = document.getElementById('data-container');
       container.innerHTML = '';
@@ -93,8 +93,11 @@
         container.appendChild(div);
       });
     }
-
+  
     fetchData();
   </script>
+</body>
+</html>
+ 
 </body>
 </html>

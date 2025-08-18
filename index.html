@@ -1,4 +1,4 @@
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
 
 <script>
   const supabaseUrl = 'https://kjrkptqhtztdxsouflzw.supabase.co';
@@ -22,6 +22,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>My GitHub Page</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -76,11 +77,34 @@
   </header>
 
   <main>
-    <h2>About</h2>
-    <p>
-      You can search here.
-    </p>
-    <a class="button" href="https://github.com/your-username" target="_blank">Visit My GitHub</a>
+    <h1>Supabase Data</h1>
+    <div id="data-container"></div>
+    <script>
+        const supabaseUrl = 'https://kjrkptqhtztdxsouflzw.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqcmtwdHFodHp0ZHhzb3VmbHp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU1MjEzMzUsImV4cCI6MjA3MTA5NzMzNX0.zNRUU9iNrtcKVKoDLclYgy_AvbFvp12JDm8B1NZjMLQ';
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    
+        async function fetchData() {
+          const { data, error } = await supabase.from('pokemon').select('*');
+          if (error) {
+            document.getElementById('data-container').textContent = 'Error: ' + error.message;
+            return;
+          }
+          displayData(data);
+        }
+    
+        function displayData(data) {
+          const container = document.getElementById('data-container');
+          container.innerHTML = '';
+          data.forEach(row => {
+            const div = document.createElement('div');
+            div.textContent = JSON.stringify(row);
+            container.appendChild(div);
+          });
+        }
+    
+        fetchData();
+    </script>
   </main>
 
   <footer>

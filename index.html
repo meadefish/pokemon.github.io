@@ -8,7 +8,7 @@
   // Example: Fetch data from a table
   async function getData() {
     const { data, error } = await supabase
-      .from('your-table')
+      .from('pokemon')
       .select('*');
     console.log(data, error);
   }

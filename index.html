@@ -102,7 +102,7 @@
 
     async function testSupabaseConnection() {
       try {
-        const { data, error } = await supabase.from('pokemon').select('*').limit(1);
+        const { data, error } = await supabase.from('pokemon_retrieval').select('*').limit(1);
         if (error) {
           console.error('Supabase connection failed:', error.message);
           document.getElementById('data-container').textContent = 'Supabase connection failed: ' + error.message;

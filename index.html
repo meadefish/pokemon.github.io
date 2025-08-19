@@ -30,18 +30,42 @@
     main {
       padding: 2rem 1rem;
     }
-    a.button {
-      display: inline-block;
-      margin-top: 1rem;
-      padding: 0.7rem 1.5rem;
-      background: #0366d6;
-      color: #fff;
-      text-decoration: none;
-      border-radius: 6px;
-      transition: background 0.3s;
+    .card-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 2rem;
     }
-    a.button:hover {
-      background: #024f9c;
+    .pokemon-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.09);
+      padding: 1rem 1.5rem;
+      min-width: 220px;
+      max-width: 260px;
+      text-align: left;
+      transition: transform 0.2s;
+    }
+    .pokemon-card:hover {
+      transform: scale(1.04);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+    }
+    .pokemon-card img {
+      width: 100%;
+      max-height: 120px;
+      object-fit: contain;
+      margin-bottom: 0.5rem;
+    }
+    .pokemon-name {
+      font-size: 1.3rem;
+      font-weight: bold;
+      margin-bottom: 0.25rem;
+    }
+    .pokemon-type {
+      font-size: 1rem;
+      color: #555;
+      margin-bottom: 0.5rem;
     }
     footer {
       margin-top: 2rem;
@@ -65,63 +89,92 @@
   <footer>
     &copy; 2025 Meadefish Solutions | Hosted on <a href="https://pages.github.com/">GitHub Pages</a>
   </footer>
+
   <script>
-      (async () => {
-        console.log("Script loaded!");
-      
-        // Dynamically load Supabase JS from CDN
-        const supabaseModule = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm');
-        const supabaseUrl = 'https://kjrkptqhtztdxsouflzw.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqcmtwdHFodHp0ZHhzb3VmbHp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU1MjEzMzUsImV4cCI6MjA3MTA5NzMzNX0.zNRUU9iNrtcKVKoDLclYgy_AvbFvp12JDm8B1NZjMLQ';
-        const supabase = supabaseModule.createClient(supabaseUrl, supabaseKey);
-      
-        async function testSupabaseConnection() {
-          try {
-            const { data, error } = await supabase.from('pokemon').select('*').limit(1);
-            if (error) {
-              console.error('Supabase connection failed:', error.message);
-              document.getElementById('data-container').textContent = 'Supabase connection failed: ' + error.message;
-              return false;
-            }
-            console.log('Supabase connection OK:', data);
-            return true;
-          } catch (err) {
-            console.error('Supabase JS error:', err);
-            document.getElementById('data-container').textContent = 'Supabase JS error: ' + err;
-            return false;
-          }
+  (async () => {
+    console.log("Script loaded!");
+
+    // Dynamically load Supabase JS from CDN
+    const supabaseModule = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm');
+    const supabaseUrl = 'https://kjrkptqhtztdxsouflzw.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqcmtwdHFodHp0ZHhzb3VmbHp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU1MjEzMzUsImV4cCI6MjA3MTA5NzMzNX0.zNRUU9iNrtcKVKoDLclYgy_AvbFvp12JDm8B1NZjMLQ';
+    const supabase = supabaseModule.createClient(supabaseUrl, supabaseKey);
+
+    async function testSupabaseConnection() {
+      try {
+        const { data, error } = await supabase.from('pokemon').select('*').limit(1);
+        if (error) {
+          console.error('Supabase connection failed:', error.message);
+          document.getElementById('data-container').textContent = 'Supabase connection failed: ' + error.message;
+          return false;
         }
-      
-        async function fetchData() {
-          const { data, error } = await supabase.from('pokemon').select('*');
-          console.log('Data:', data, 'Error:', error);
-          if (error) {
-            document.getElementById('data-container').textContent = 'Error: ' + error.message;
-            return;
-          }
-          displayData(data);
+        console.log('Supabase connection OK:', data);
+        return true;
+      } catch (err) {
+        console.error('Supabase JS error:', err);
+        document.getElementById('data-container').textContent = 'Supabase JS error: ' + err;
+        return false;
+      }
+    }
+
+    async function fetchData() {
+      const { data, error } = await supabase.from('pokemon').select('*');
+      console.log('Data:', data, 'Error:', error);
+      if (error) {
+        document.getElementById('data-container').textContent = 'Error: ' + error.message;
+        return;
+      }
+      displayData(data);
+    }
+
+    function displayData(data) {
+      const container = document.getElementById('data-container');
+      container.innerHTML = '';
+      const cardContainer = document.createElement('div');
+      cardContainer.className = 'card-container';
+      if (!data || data.length === 0) {
+        container.textContent = 'No data found!';
+        return;
+      }
+      data.forEach(row => {
+        const card = document.createElement('div');
+        card.className = 'pokemon-card';
+        // Image
+        if (row.image_url) {
+          const img = document.createElement('img');
+          img.src = row.image_url;
+          img.alt = row.name || 'Pokemon';
+          card.appendChild(img);
         }
-      
-        function displayData(data) {
-          const container = document.getElementById('data-container');
-          container.innerHTML = '';
-          if (!data || data.length === 0) {
-            container.textContent = 'No data found!';
-            return;
-          }
-          data.forEach(row => {
-            const div = document.createElement('div');
-            div.textContent = JSON.stringify(row);
-            container.appendChild(div);
-          });
+        // Name
+        const name = document.createElement('div');
+        name.className = 'pokemon-name';
+        name.textContent = row.name || 'Unknown';
+        card.appendChild(name);
+        // Type
+        if (row.type) {
+          const type = document.createElement('div');
+          type.className = 'pokemon-type';
+          type.textContent = `Type: ${row.type}`;
+          card.appendChild(type);
         }
-      
-        // Test connection before running fetchData
-        if (await testSupabaseConnection()) {
-          await fetchData();
-        }
-      })();
+        // Other info
+        Object.keys(row).forEach(key => {
+          if (['name', 'type', 'image_url'].includes(key)) return;
+          const info = document.createElement('div');
+          info.textContent = `${key}: ${row[key]}`;
+          card.appendChild(info);
+        });
+        cardContainer.appendChild(card);
+      });
+      container.appendChild(cardContainer);
+    }
+
+    // Test connection before running fetchData
+    if (await testSupabaseConnection()) {
+      await fetchData();
+    }
+  })();
   </script>
- 
 </body>
 </html>
